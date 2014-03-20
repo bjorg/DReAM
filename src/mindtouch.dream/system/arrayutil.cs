@@ -19,6 +19,7 @@
  * limitations under the License.
  */
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -112,7 +113,83 @@ namespace System {
     public static class ArrayUtil {
 
         //--- Types ---
-        private class ExceededDeltaException : Exception { }
+        private sealed class ExceededDeltaException : Exception { }
+
+        private class ImmutableEnumerable<T> : IEnumerable<T> {
+
+            //--- Types ---
+            private class ImmutableEnumerator : IEnumerator<T> {
+
+                //--- Fields ---
+                private readonly List<T> _accumulator;
+                private IEnumerator<T> _accumulatorEnumerator;
+                private readonly IEnumerator<T> _enumerator;
+
+                //--- Constructors ---
+                public ImmutableEnumerator(List<T> accumulator, IEnumerator<T> enumerator) {
+                    _accumulator = accumulator;
+                    _accumulatorEnumerator = _accumulator.GetEnumerator();
+                    _enumerator = enumerator;
+                }
+
+                //--- Properties ---
+                public T Current { get { return (_accumulatorEnumerator != null) ? _accumulatorEnumerator.Current : _enumerator.Current; } }
+
+                //--- Methods ---
+                public bool MoveNext() {
+                    if(_accumulatorEnumerator != null) {
+                        if(_accumulatorEnumerator.MoveNext()) {
+                            return true;
+                        }
+                        _accumulatorEnumerator.Dispose();
+                        _accumulatorEnumerator = null;
+                    }
+                    if(_enumerator.MoveNext()) {
+                        _accumulator.Add(_enumerator.Current);
+                        return true;
+                    }
+                    return false;
+                }
+
+                public void Reset() {
+                    if(_accumulatorEnumerator != null) {
+                        _accumulatorEnumerator.Reset();
+                    } else {
+                        _accumulatorEnumerator = _accumulator.GetEnumerator();
+                    }
+                }
+
+                public void Dispose() {
+                    if(_accumulatorEnumerator != null) {
+                        _accumulatorEnumerator.Dispose();
+                        _accumulatorEnumerator = null;
+                    }
+                }
+
+                //--- IEnumerator Members ---
+                object IEnumerator.Current { get { return Current; } }
+            }
+
+            //--- Fields ---
+            private List<T> _accumulator;
+            private T[] _finalAccumulator;
+            private IEnumerable<T> _enumerable;
+
+            //--- Constructors ---
+
+            //--- Methods ---
+            public IEnumerator<T> GetEnumerator() {
+                if(_finalAccumulator != null) {
+                    return ((IEnumerable<T>)_finalAccumulator).GetEnumerator();
+                }
+                throw new NotImplementedException();
+            }
+
+            //--- IEnumerable Members ---
+            IEnumerator IEnumerable.GetEnumerator() {
+                return GetEnumerator();
+            }
+        }
 
         //--- Extension Methods ---
 
