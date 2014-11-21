@@ -25,6 +25,18 @@ using MindTouch.Xml;
 using NUnit.Framework;
 
 namespace MindTouch.Dream.Test {
+    [TestFixture, Ignore("peformance tests")]
+    public class DreamHostPerfTest {
+        
+        //--- Methods ---
+        [Test]
+        public void StartupAndTeardown() {
+            for(var i = 0; i < 50; ++i) {
+                var hostinfo = DreamTestHelper.CreateRandomPortHost(new XDoc("config").Elem("dream.in.authtoken", "abc"));
+                hostinfo.Dispose();
+            }
+        }
+    }
 
     [TestFixture]
     public class DreamHostTest {
