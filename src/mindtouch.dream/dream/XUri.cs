@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+#if !DOTNETCORE
 using System.Runtime.Serialization;
+#endif
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -85,8 +87,12 @@ namespace MindTouch.Dream {
     /// <summary>
     /// Encapsulation of a Uniform Resource Identifier as an immutable class with a fluent interface for modification.
     /// </summary>
+#if !DOTNETCORE
     [Serializable]
     public sealed class XUri : ISerializable {
+#else
+    public sealed class XUri {
+#endif
 
         // NOTE (steveb): XUri parses absolute URIs based on RFC3986 (http://www.ietf.org/rfc/rfc3986.txt), with the addition of ^, |, [, ], { and } as a valid character in segments, queries, and fragments; and \ as valid segment separator
 
@@ -991,7 +997,7 @@ namespace MindTouch.Dream {
         /// <summary>
         /// <see cref="Path"/> [ + "?" + <see cref="Query"/> ] [ + "#" + <see cref="Fragment"/> ].
         /// </summary>
-        /// 
+        ///
         public string PathQueryFragment {
             get {
                 var result = new StringBuilder();
@@ -1846,7 +1852,7 @@ namespace MindTouch.Dream {
         }
 
         /// <summary>
-        /// Renders uri as a string 
+        /// Renders uri as a string
         /// </summary>
         /// <param name="includePassword">If <see langword="True"/> the user info password is replaced with 'xxx'.</param>
         /// <returns>Uri string.</returns>
@@ -1966,9 +1972,11 @@ namespace MindTouch.Dream {
             return !segments.Where((t, i) => !INVARIANT_IGNORE_CASE.Equals(Segments[i], t)).Any();
         }
 
+#if !DOTNETCORE
         //--- ISerializable Members ---
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
             info.AddValue("uri", ToString());
         }
+#endif
     }
 }

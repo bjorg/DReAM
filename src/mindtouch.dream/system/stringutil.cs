@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace System {
+
+#if DOTNETCORE
+    public delegate TOutput Converter<TInput, TOutput>(TInput input);
+#endif
 
     /// <summary>
     /// Implementation of <see cref="IComparer"/> based on <see cref="CultureInfo.CompareInfo"/>.
@@ -75,9 +79,11 @@ namespace System {
         public static readonly string[] EmptyArray = new string[0];
 
         private static readonly char[] _alphanum_chars;
+#if !DOTNETCORE
         private static readonly RNGCryptoServiceProvider _generator = new RNGCryptoServiceProvider();
         private static Dictionary<string, Sgml.Entity> _literals;
         private static Dictionary<string, string> _entities;
+#endif
         private static readonly Regex _htmlEntitiesRegEx = new Regex("&(?<value>#(x[a-f0-9]+|[0-9]+)|[a-z0-9]+);", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         //--- Class Constructor ---
@@ -96,6 +102,7 @@ namespace System {
         }
 
         //--- Class Properties ---
+#if !DOTNETCORE
         private static Dictionary<string, Sgml.Entity> LiteralNameLookup {
             get {
                 if(_literals == null) {
@@ -119,6 +126,7 @@ namespace System {
                 return _entities;
             }
         }
+#endif
 
         //--- Extension Methods ---
 
@@ -141,7 +149,7 @@ namespace System {
             int currentIndex = 0;
             int lastIndex = 0;
             for(; currentIndex < source.Length; ++currentIndex) {
-                
+
                 // loop over all replacement strings
                 for(int j = 0; j < replacements.Length; j += 2) {
 
@@ -235,6 +243,7 @@ namespace System {
             return result.ToString();
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Encode any html entities in a string.
         /// </summary>
@@ -327,6 +336,7 @@ namespace System {
                 }
             }, int.MaxValue);
         }
+#endif
 
         /// <summary>
         /// Escape string.
@@ -569,12 +579,14 @@ namespace System {
             case StringComparison.CurrentCultureIgnoreCase:
                 comparer = StringComparer.CurrentCultureIgnoreCase;
                 break;
+#if !DOTNETCORE
             case StringComparison.InvariantCulture:
                 comparer = StringComparer.InvariantCulture;
                 break;
             case StringComparison.InvariantCultureIgnoreCase:
                 comparer = StringComparer.InvariantCultureIgnoreCase;
                 break;
+#endif
             case StringComparison.Ordinal:
                 comparer = StringComparer.Ordinal;
                 break;
@@ -730,7 +742,7 @@ namespace System {
         /// <param name="right">Right-hand string to compare.</param>
         /// <param name="ignoreCase"><see langword="True"/> if case should not be considered in comparison.</param>
         /// <returns>
-        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero 
+        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero
         /// left is less than right. Zero left equals right. Greater than zero left is greater than right.
         /// </returns>
         public static int CompareInvariant(this string left, string right, bool ignoreCase) {
@@ -743,7 +755,7 @@ namespace System {
         /// <param name="left">Left-hand string to compare.</param>
         /// <param name="right">Right-hand string to compare.</param>
         /// <returns>
-        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero 
+        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero
         /// left is less than right. Zero left equals right. Greater than zero left is greater than right.
         /// </returns>
         public static int CompareInvariant(this string left, string right) {
@@ -756,7 +768,7 @@ namespace System {
         /// <param name="left">Left-hand string to compare.</param>
         /// <param name="right">Right-hand string to compare.</param>
         /// <returns>
-        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero 
+        /// A 32-bit signed integer indicating the lexical relationship between the two comparands.  Value Condition Less than zero
         /// left is less than right. Zero left equals right. Greater than zero left is greater than right.
         /// </returns>
         public static int CompareInvariantIgnoreCase(this string left, string right) {
@@ -948,7 +960,7 @@ namespace System {
         }
 
         //--- Class Methods ---
-
+#if !DOTNETCORE
         /// <summary>
         /// Compute a random alphanumeric value.
         /// </summary>
@@ -977,6 +989,7 @@ namespace System {
             }
             return new string(result);
         }
+#endif
 
         /// <summary>
         /// Compute the MD5 hash.
