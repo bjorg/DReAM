@@ -24,10 +24,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-#if !DOTNETCORE
 using MindTouch.IO;
+#if !DOTNETCORE
 using MindTouch.Tasking;
 #endif
+
 using MindTouch.Web;
 using MindTouch.Xml;
 
@@ -296,7 +297,6 @@ namespace MindTouch.Dream {
             return new DreamMessage(DreamStatus.InternalError, null, MimeType.DREAM_EXCEPTION, (e != null) ? new XException(e) : XDoc.Empty);
         }
 
-
         /// <summary>
         /// Create a message from a file.
         /// </summary>
@@ -341,6 +341,7 @@ namespace MindTouch.Dream {
             return result;
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Create a new message tied to a Stream for streaming data.
         /// </summary>
@@ -352,7 +353,7 @@ namespace MindTouch.Dream {
             StreamUtil.CreatePipe(out writer, out reader);
             message = Ok(mime, -1, reader);
         }
-
+#endif
 
         /// <summary>
         /// Get a status string from a DreamMessage or null, or null, if the message is null.
@@ -366,17 +367,20 @@ namespace MindTouch.Dream {
             return null;
         }
 
-
         private static XDoc GetDefaultErrorResponse(DreamStatus status, string title, string message) {
             XDoc result = new XDoc("error");
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if((context != null) && (context.Env.Self != null)) {
                 result.WithXslTransform(context.AsPublicUri(context.Env.Self).At("resources", "error.xslt").Path);
             }
+#endif
             result.Elem("status", (int)status).Elem("title", title).Elem("message", message);
+#if !DOTNETCORE
             if(context != null) {
                 result.Elem("uri", context.Uri);
             }
+#endif
             return result;
         }
 

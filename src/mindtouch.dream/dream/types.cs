@@ -23,13 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Security.Principal;
 
 #if !DOTNETCORE
+using System.Security.Principal;
 using Autofac;
 using MindTouch.Tasking;
-using MindTouch.Web;
 #endif
+using MindTouch.Web;
 using MindTouch.Xml;
 
 namespace MindTouch.Dream {

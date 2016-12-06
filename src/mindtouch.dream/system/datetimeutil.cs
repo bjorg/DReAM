@@ -36,7 +36,7 @@ namespace System {
         public static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         //--- Class Properties ---
-
+#if !DOTNETCORE
         /// <summary>
         /// Get today's date in UTC timezone.
         /// </summary>
@@ -45,6 +45,7 @@ namespace System {
                 return GlobalClock.UtcNow.Date;
             }
         }
+#endif
 
         //--- Extension Methods ---
 

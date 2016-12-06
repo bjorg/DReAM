@@ -211,9 +211,10 @@ namespace System {
             }
 
             // check if type is enum and value is a value type
-            if(type.IsEnum) {
+            var typeInfo = type.GetTypeInfo();
+            if(typeInfo.IsEnum) {
                 var valueType = value.GetType();
-                if(valueType.IsValueType && (value is Byte || value is Int32 || value is SByte || value is Int16 || value is Int64 || value is UInt16 || value is UInt32 || value is UInt64)) {
+                if(valueType.GetTypeInfo().IsValueType && (value is Byte || value is Int32 || value is SByte || value is Int16 || value is Int64 || value is UInt16 || value is UInt32 || value is UInt64)) {
                     return Enum.ToObject(type, value);
                 }
             }
@@ -229,7 +230,7 @@ namespace System {
                     }
                     return result;
                 }
-                if(type.IsEnum) {
+                if(typeInfo.IsEnum) {
 
                     // target type is enum
                     try {

@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,17 +20,17 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using MindTouch.Extensions.Time;
+#if !DOTNETCORE
 using MindTouch.Tasking;
-using MindTouch.Text;
+#endif
 
 namespace MindTouch.IO {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
     /// <summary>
     /// A set of static and extension methods to simplify common stream opreations and add <see cref="Result"/> based asynchronous operations
@@ -48,7 +48,9 @@ namespace MindTouch.IO {
 
         //--- Class Fields ---
         private static readonly Random Randomizer = new Random();
+#if !DOTNETCORE
         private static log4net.ILog _log = log4net.LogManager.GetLogger(typeof(StreamUtil));
+#endif
 
         //--- Extension Methods ---
 
@@ -103,11 +105,12 @@ namespace MindTouch.IO {
         /// <param name="stream">Target <see cref="Stream"/></param>
         /// <returns><see langword="true"/> If the <see cref="Stream"/> contents are in memory</returns>
         public static bool IsStreamMemorized(this Stream stream) {
-#pragma warning disable 612,618
+#pragma warning disable 612, 618
             return stream is MemoryStream;
-#pragma warning restore 612,618
+#pragma warning restore 612, 618
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Asynchronously read from a <see cref="Stream"/>
         /// </summary>
@@ -153,6 +156,7 @@ namespace MindTouch.IO {
             }
             return AsyncUtil.Fork(() => stream.Write(buffer, offset, count), result);
         }
+#endif
 
         /// <summary>
         /// Synchronous copying of one stream to another.
@@ -166,7 +170,12 @@ namespace MindTouch.IO {
             var buffer = new byte[Math.Min(bufferLength, BUFFER_SIZE)];
             long total = 0;
             while(length != 0) {
-                var count = (length >= 0) ? Math.Min(length, buffer.LongLength) : buffer.LongLength;
+#if !DOTNETCORE
+                var longLength = buffer.LongLength;
+#else
+                var longLength = buffer.Length;
+#endif
+                var count = (length >= 0) ? Math.Min(length, longLength) : longLength;
                 count = source.Read(buffer, 0, (int)count);
                 if(count == 0) {
                     break;
@@ -178,6 +187,7 @@ namespace MindTouch.IO {
             return total;
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Asynchronous copying of one stream to another.
         /// </summary>
@@ -215,7 +225,7 @@ namespace MindTouch.IO {
             int zero_read_counter = 0;
             Result write = null;
 
-            // NOTE (steveb): we stop when we've read the expected number of bytes and the length was non-negative, 
+            // NOTE (steveb): we stop when we've read the expected number of bytes and the length was non-negative,
             //                otherwise we stop when we can't read anymore bytes.
 
             while(length != 0) {
@@ -307,7 +317,7 @@ namespace MindTouch.IO {
                 totals[i] = 0;
             }
 
-            // NOTE (steveb): we stop when we've read the expected number of bytes when the length was non-negative, 
+            // NOTE (steveb): we stop when we've read the expected number of bytes when the length was non-negative,
             //                otherwise we stop when we can't read anymore bytes.
 
             while(length != 0) {
@@ -454,6 +464,7 @@ namespace MindTouch.IO {
             }
             result.Return();
         }
+#endif
 
         /// <summary>
         /// Compute the MD5 hash.
@@ -485,6 +496,7 @@ namespace MindTouch.IO {
             return result.ToArray();
         }
 
+#if !DOTNETCORE
 #if WARN_ON_SYNC
         [Obsolete("This method is thread-blocking.  Please avoid using it if possible.")]
 #endif
@@ -510,7 +522,7 @@ namespace MindTouch.IO {
             return result;
         }
 
-        /// <summary>
+        /// <summary>`
         /// Detect stream encoding.
         /// </summary>
         /// <param name="stream">Stream to examine</param>
@@ -586,5 +598,6 @@ namespace MindTouch.IO {
             writer = new PipeStreamWriter(buffer);
             reader = new PipeStreamReader(buffer);
         }
+#endif
     }
 }

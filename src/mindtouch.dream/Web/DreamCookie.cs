@@ -340,7 +340,11 @@ namespace MindTouch.Web {
                 } else if(StringUtil.EqualsInvariantIgnoreCase(name, "path")) {
                     path = value;
                 } else if(StringUtil.EqualsInvariantIgnoreCase(name, "max-age")) {
+#if !DOTNETCORE
                     expires = GlobalClock.UtcNow.AddSeconds(int.Parse(value, NumberFormatInfo.InvariantInfo));
+#else
+                    expires = DateTime.UtcNow.AddSeconds(int.Parse(value, NumberFormatInfo.InvariantInfo));
+#endif
                 } else if(StringUtil.EqualsInvariantIgnoreCase(name, "expires")) {
                     expires = ParseCookieDateTimeString(value);
                 } else if(StringUtil.EqualsInvariantIgnoreCase(name, "port")) {
@@ -558,7 +562,7 @@ namespace MindTouch.Web {
             return ((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) ||
                    ((c > 32) && (c < 127) && (c != ',') && (c != ';') && (c != '='));
         }
-        #endregion
+#endregion
 
         //--- Fields ---
         private readonly XUri _uri;
@@ -593,6 +597,7 @@ namespace MindTouch.Web {
             _name = name;
             _value = value;
             if(uri != null) {
+#if !DOTNETCORE
                 _uri = uri.WithoutQuery().WithoutCredentials().WithoutFragment().AsLocalUri();
                 if(!skipContextDiscovery) {
                     DreamContext dc = DreamContext.CurrentOrNull;
@@ -601,6 +606,9 @@ namespace MindTouch.Web {
                         _localMachineUri = dc.Env.LocalMachineUri;
                     }
                 }
+#else
+                _uri = uri.WithoutQuery().WithoutCredentials().WithoutFragment();
+#endif
             }
 
             // auto-convert very old expiration dates to max since they are most likely bogus
@@ -679,7 +687,11 @@ namespace MindTouch.Web {
         /// <see langword="True"/> if the cookie is already exipired.
         /// </summary>
         public bool Expired {
+#if !DOTNETCORE
             get { return GlobalClock.UtcNow > Expires; }
+#else
+            get { return DateTime.UtcNow > Expires; }
+#endif
         }
 
         /// <summary>
@@ -751,7 +763,11 @@ namespace MindTouch.Web {
                 XDoc result = new XDoc("set-cookie")
                     .Attr("version", 1)
                     .Elem("name", Name)
+#if !DOTNETCORE
                     .Elem("uri", Uri.AsLocalUri().ToString())
+#else
+                    .Elem("uri", Uri.ToString())
+#endif
                     .Elem("value", Value);
                 if(Expires < DateTime.MaxValue) {
                     result.Elem("expires", Expires);

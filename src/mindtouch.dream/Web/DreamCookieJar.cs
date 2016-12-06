@@ -147,10 +147,12 @@ namespace MindTouch.Web {
             }
             List<DreamCookie> result = new List<DreamCookie>();
             Fetch(uri, 0, result);
+#if !DOTNETCORE
             XUri localUri = uri.AsLocalUri();
             if(localUri != uri) {
                 Fetch(localUri, 0, result);
             }
+#endif
             return result;
         }
 

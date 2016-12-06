@@ -596,7 +596,6 @@ namespace MindTouch.Dream {
             return result;
         }
 
-
         /// <summary>
         /// Parse an array of accepted mime-types from an <see cref="DreamHeaders.Accept"/> header.
         /// </summary>
@@ -940,7 +939,9 @@ namespace MindTouch.Dream {
                 try {
                     encoding = Encoding.GetEncoding(charset.Trim('"'));
                 } catch(ArgumentException ex) {
+#if !DOTNETCORE
                     _log.Debug(string.Format("Unsupported Character Set: '{0}'. Defaulting to UTF8 encoding.", charset), ex);
+#endif
                     encoding = Encoding.UTF8;
                 }
             } else if(MainType.EqualsInvariant("text")) {

@@ -20,13 +20,17 @@
         "dream/XUri.cs",
         "dream/XUriParser.cs",
 
-        // "IO/StreamUtil.cs",
+        "Extensions/TimeExtensions.cs",
+
+        "IO/StreamUtil.cs",
 
         // "plug/HttpPlugEndpoint.cs",
         // "plug/IPlugEndpoint.cs",
         // "plug/Plug.cs",
         // "plug/ResourcePlugEndpoint.cs",
 
+        "system/arrayutil.cs",
+        "system/datetimeutil.cs",
         "system/ShouldNeverHappenException.cs",
         "system/StringUtil.cs",
         "system/SysUtil.cs",
@@ -38,6 +42,7 @@
 
         "Xml/XDoc.cs",
         "Xml/XDocRecursiveEnumerable.cs",
+        "Xml/XDocRecursiveEnumerator.cs",
         "Xml/XTypes.cs"
       ]
     }

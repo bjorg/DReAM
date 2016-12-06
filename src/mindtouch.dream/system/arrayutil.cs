@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using MindTouch;
-using MindTouch.Collections;
 
 namespace System {
 
@@ -124,7 +122,7 @@ namespace System {
         /// <param name="collection">An <see cref="IEnumerable{TValue}"/> to create a <see cref="Dictionary{TKey,TValue}"/> from.</param>
         /// <param name="keySelector">A function to extract a key from each element.</param>
         /// <param name="overwriteDuplicates">
-        /// If <see langword="True"/>, duplicate key values are overwritten as encountered, otherwise this method will throw 
+        /// If <see langword="True"/>, duplicate key values are overwritten as encountered, otherwise this method will throw
         /// <see cref="ArgumentException"/> on key collision.
         /// </param>
         /// <returns>A <see cref="Dictionary{TKey,TValue}"/> that contains keys and values.</returns>
@@ -239,7 +237,7 @@ namespace System {
         }
 
         /// <summary>
-        /// Get the first value or null for a certain key from a <see cref="NameValueCollection"/>. 
+        /// Get the first value or null for a certain key from a <see cref="NameValueCollection"/>.
         /// </summary>
         /// <param name="collection">Collection to retrieve value from.</param>
         /// <param name="key">Key to retrieve value for.</param>
@@ -295,7 +293,7 @@ namespace System {
         /// Compare two Arrays.
         /// </summary>
         /// <remarks>
-        /// Compare first checks array lengths and then each item, returning either the size difference of the arrays or the 
+        /// Compare first checks array lengths and then each item, returning either the size difference of the arrays or the
         /// <see cref="IComparable{T}.CompareTo"/> value of the first non-matching item.
         /// </remarks>
         /// <typeparam name="T">Type of <see cref="Array"/> items. Must be <see cref="IComparable{T}"/>.</typeparam>
@@ -471,6 +469,7 @@ namespace System {
             return result.ToArray();
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Compute an array of differences between two arrays.
         /// </summary>
@@ -717,6 +716,7 @@ namespace System {
             }
             return result.ToArray();
         }
+#endif
 
         /// <summary>
         /// Removes the last occurrence of an item in a list.
@@ -751,6 +751,7 @@ namespace System {
             return index;
         }
 
+#if !DOTNETCORE
         private static bool ObjectEquality<T>(T left, T right) where T : class {
             return ((left == null) && (right == null)) || (((left != null) && (right != null)) && (left == right));
         }
@@ -786,7 +787,6 @@ namespace System {
             }
             return cur;
         }
-
 
         private static void MyersDiff<T>(T[] before, T[] after, Equality<T> equal, int maxdelta, IList<Tuple<ArrayDiffKind, T>> result) where T : class {
 
@@ -955,5 +955,6 @@ namespace System {
             }
             throw new InvalidOperationException("this should never happen");
         }
+#endif
     }
 }

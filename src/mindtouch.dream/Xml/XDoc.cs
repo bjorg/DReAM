@@ -595,7 +595,9 @@ namespace MindTouch.Xml {
                         return new XDoc(list.ToArray(), 0, null, namespaces);
                     }
                 } catch(Exception e) {
+#if !DOTNETCORE
                     _log.ErrorExceptionMethodCall(e, "AtPath", path);
+#endif
                     throw;
                 }
             }
@@ -915,10 +917,12 @@ namespace MindTouch.Xml {
                     return null;
                 }
                 XUri result = new XUri(AsText);
+#if !DOTNETCORE
                 DreamContext context = DreamContext.CurrentOrNull;
                 if(context != null) {
                     result = context.AsLocalUri(result);
                 }
+#endif
                 return result;
             }
         }
@@ -1175,10 +1179,12 @@ namespace MindTouch.Xml {
             if(value == null) {
                 return this;
             }
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if(context != null) {
                 value = context.AsPublicUri(value);
             }
+#endif
             return Attr(tag, value.ToString());
         }
 
@@ -1522,10 +1528,12 @@ namespace MindTouch.Xml {
             if(value == null) {
                 return this;
             }
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if(context != null) {
                 value = context.AsPublicUri(value);
             }
+#endif
             return Value(value.ToString());
         }
 
@@ -1760,10 +1768,12 @@ namespace MindTouch.Xml {
 
                 throw new ArgumentNullException("value");
             }
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if(context != null) {
                 value = context.AsPublicUri(value);
             }
+#endif
             return ReplaceValue(value.ToString());
         }
 
@@ -2423,10 +2433,12 @@ namespace MindTouch.Xml {
             if(value == null) {
                 return this;
             }
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if(context != null) {
                 value = context.AsPublicUri(value);
             }
+#endif
             return AddAfter(value.ToString());
         }
 
@@ -2535,10 +2547,12 @@ namespace MindTouch.Xml {
             if(value == null) {
                 return this;
             }
+#if !DOTNETCORE
             DreamContext context = DreamContext.CurrentOrNull;
             if(context != null) {
                 value = context.AsPublicUri(value);
             }
+#endif
             return AddBefore(value.ToString());
         }
 
