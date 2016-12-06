@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,12 +26,16 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 
+#if !DOTNETCORE
 using MindTouch.Tasking;
+#endif
 using MindTouch.Web;
 using MindTouch.Xml;
 
 namespace MindTouch.Dream {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
     /// <summary>
     /// Provides a contract for intercepting and modifying <see cref="Plug"/> requests and responses in the invocation pipeline.
@@ -60,7 +64,7 @@ namespace MindTouch.Dream {
         /// Base score normal priorty <see cref="IPlugEndpoint"/> implementations should use to signal a successful match.
         /// </summary>
         public const int BASE_ENDPOINT_SCORE = int.MaxValue / 2;
-        
+
         /// <summary>
         /// Default timeout of 60 seconds for <see cref="Plug"/> invocations.
         /// </summary>
@@ -73,7 +77,9 @@ namespace MindTouch.Dream {
         /// </summary>
         public static DreamCookieJar GlobalCookies = new DreamCookieJar();
 
+#if !DOTNETCORE
         private static log4net.ILog _log = LogUtils.CreateLog();
+#endif
         private static List<IPlugEndpoint> _endpoints = new List<IPlugEndpoint>();
 
         //--- Class Constructor ---
@@ -1068,7 +1074,7 @@ namespace MindTouch.Dream {
         /// <returns>Synchronization handle.</returns>
         public Result<DreamMessage> Invoke(string verb, DreamMessage request, Result<DreamMessage> result) {
 
-            // Note (arnec): Plug never throws, so we remove the timeout from the result (if it has one), 
+            // Note (arnec): Plug never throws, so we remove the timeout from the result (if it has one),
             // and pass it into our coroutine manually.
             var timeout = result.Timeout;
             if(timeout != TimeSpan.MaxValue) {

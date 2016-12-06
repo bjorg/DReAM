@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,14 +25,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Principal;
 
+#if !DOTNETCORE
 using Autofac;
-
 using MindTouch.Tasking;
 using MindTouch.Web;
+#endif
 using MindTouch.Xml;
 
 namespace MindTouch.Dream {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
     /// <summary>
     /// Dream Feature Access level.
@@ -55,6 +58,7 @@ namespace MindTouch.Dream {
         Private
     }
 
+#if !DOTNETCORE
     /// <summary>
     /// Provides the interface for the Dream host environment.
     /// </summary>
@@ -208,7 +212,7 @@ namespace MindTouch.Dream {
         /// Exception translators given an opportunity to rewrite an exception before it is returned to the initiator of a request.
         /// </summary>
         ExceptionTranslator[] ExceptionTranslators { get; }
-        
+
         //--- Methods ---
 
         /// <summary>
@@ -239,6 +243,7 @@ namespace MindTouch.Dream {
         /// </summary>
         string ServiceLicense { get; }
     }
+#endif
 
     /// <summary>
     /// Common Http verbs.
@@ -392,6 +397,7 @@ namespace MindTouch.Dream {
         public const string SAVEAS = "dream.out.saveas";
     }
 
+#if !DOTNETCORE
     /// <summary>
     /// Delegate type for implemting an exception translator.
     /// </summary>
@@ -517,7 +523,7 @@ namespace MindTouch.Dream {
         /// <summary>
         /// Get the list of declared feature parameter attributes
         /// </summary>
-        public readonly IEnumerable<DreamFeatureParamAttribute> FeatureParamAttributes; 
+        public readonly IEnumerable<DreamFeatureParamAttribute> FeatureParamAttributes;
 
         private KeyValuePair<int, string>[] _paramNames;
         private int _counter;
@@ -563,7 +569,7 @@ namespace MindTouch.Dream {
         public string VerbSignature { get { return Verb + ":" + Signature; } }
 
         /// <summary>
-        /// <see cref="Verb"/> + ":" + <see cref="Path"/>. 
+        /// <see cref="Verb"/> + ":" + <see cref="Path"/>.
         /// </summary>
         public string VerbPath { get { return Verb + ":" + Path; } }
 
@@ -615,6 +621,7 @@ namespace MindTouch.Dream {
             System.Threading.Interlocked.Increment(ref _counter);
         }
     }
+#endif
 
     /// <summary>
     /// Encapsulation for Http Content-Disposition header.
@@ -769,7 +776,7 @@ namespace MindTouch.Dream {
                 bool gotFilename = false;
                 if(!string.IsNullOrEmpty(UserAgent)) {
                     if(URL_ENCODE_REGEX.IsMatch(UserAgent)) {
-                        
+
                         // Filename is uri encoded to support non ascii characters.
                         // + is replaced with %20 for IE otherwise it saves names containing spaces with plusses.
                         result.Append("; filename=\"").Append(XUri.Encode(FileName).Replace("+", "%20")).Append("\"");
@@ -794,7 +801,7 @@ namespace MindTouch.Dream {
     /// This class encapsulates a call to ToString() which will be executed once and and only when requested.
     /// </summary>
     public class LazyToString {
-        
+
         //--- Fields ---
         private string _value;
         private Func<string> _writer;

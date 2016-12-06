@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,10 +21,16 @@
 
 using System.Collections.Generic;
 
+#if !DOTNETCORE
 using MindTouch.Tasking;
+#else
+using System.Threading.Tasks;
+#endif
 
 namespace MindTouch.Dream {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
 
     /// <summary>
@@ -50,6 +56,7 @@ namespace MindTouch.Dream {
         /// </returns>
         int GetScoreWithNormalizedUri(XUri uri, out XUri normalized);
 
+#if !DOTNETCORE
         /// <summary>
         /// Handle the invocation of a plug.
         /// </summary>
@@ -66,5 +73,20 @@ namespace MindTouch.Dream {
         /// </param>
         /// <returns>Iterator used by <see cref="Coroutine"/>.</returns>
         Yield Invoke(Plug plug, string verb, XUri uri, DreamMessage request, Result<DreamMessage> response);
+#else
+        /// <summary>
+        /// Handle the invocation of a plug.
+        /// </summary>
+        /// <remarks>
+        /// <para>It is the responsibility of the caller to close the request, so Invoke should never close the request.</para>
+        /// <para>This method is a coroutine and should never be invoked directly.</para>
+        /// </remarks>
+        /// <param name="plug">Plug to handle.</param>
+        /// <param name="verb">Invocation verb.</param>
+        /// <param name="uri">Invocation uri.</param>
+        /// <param name="request">Request message.</param>
+        /// <returns>Task with <see cref="DreamMessage"/>.</returns>
+        Task<DreamMessage> Invoke(Plug plug, string verb, XUri uri, DreamMessage request);
+#endif
     }
 }

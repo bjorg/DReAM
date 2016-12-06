@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,13 +24,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+#if !DOTNETCORE
 using MindTouch.IO;
 using MindTouch.Tasking;
+#endif
 using MindTouch.Web;
 using MindTouch.Xml;
 
 namespace MindTouch.Dream {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
     /// <summary>
     /// Provides the Dream encapsulations of Http request and response objects.
@@ -38,7 +42,9 @@ namespace MindTouch.Dream {
     public class DreamMessage {
 
         //--- Class Fields ---
+#if !DOTNETCORE
         private static log4net.ILog _log = LogUtils.CreateLog();
+#endif
 
         //--- Class Methods ---
         /// <summary>
@@ -134,7 +140,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage NotFound(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Not Found - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.NotFound, null, GetDefaultErrorResponse(DreamStatus.NotFound, "Not Found", reason));
         }
 
@@ -144,7 +152,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage BadRequest(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Bad Request - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.BadRequest, null, GetDefaultErrorResponse(DreamStatus.BadRequest, "Bad Request", reason));
         }
 
@@ -154,7 +164,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage NotImplemented(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Not Implemented - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.NotImplemented, null, GetDefaultErrorResponse(DreamStatus.NotImplemented, "Not Implemented", reason));
         }
 
@@ -164,7 +176,9 @@ namespace MindTouch.Dream {
         /// <param name="doc">Message body.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage Conflict(XDoc doc) {
+#if !DOTNETCORE
             _log.DebugMethodCall("Response: Conflict");
+#endif
             return new DreamMessage(DreamStatus.Conflict, null, doc);
         }
 
@@ -174,7 +188,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage Conflict(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Conflict - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.Conflict, null, GetDefaultErrorResponse(DreamStatus.Conflict, "Conflict", reason));
         }
 
@@ -196,7 +212,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage AccessDenied(string accessRealm, string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Unauthorized - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             DreamMessage result = new DreamMessage(DreamStatus.Unauthorized, null, GetDefaultErrorResponse(DreamStatus.Unauthorized, "Unauthorized", reason));
             if(!string.IsNullOrWhiteSpace(accessRealm)) {
                 result.Headers.Authenticate = string.Format("Basic realm=\"{0}\"", accessRealm);
@@ -210,7 +228,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage LicenseRequired(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: LicenseRequired - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.LicenseRequired, null, GetDefaultErrorResponse(DreamStatus.LicenseRequired, "LicenseRequired", reason));
         }
 
@@ -220,7 +240,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage Forbidden(string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: Forbidden - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             return new DreamMessage(DreamStatus.Forbidden, null, GetDefaultErrorResponse(DreamStatus.Forbidden, "Forbidden", reason));
         }
 
@@ -231,7 +253,9 @@ namespace MindTouch.Dream {
         /// <param name="reason">Reason.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage MethodNotAllowed(string[] allowedMethods, string reason) {
+#if !DOTNETCORE
             _log.DebugFormat("Response: MethodNotAllowed - {0}{1}", reason, DebugOnly_GetRequestPath());
+#endif
             DreamMessage result = new DreamMessage(DreamStatus.MethodNotAllowed, null, GetDefaultErrorResponse(DreamStatus.MethodNotAllowed, "Method Not Allowed", reason));
             result.Headers.Allow = string.Join(",", allowedMethods);
             return result;
@@ -242,7 +266,9 @@ namespace MindTouch.Dream {
         /// </summary>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage InternalError() {
+#if !DOTNETCORE
             _log.DebugMethodCall("Response: Internal Error");
+#endif
             return new DreamMessage(DreamStatus.InternalError, null, XDoc.Empty);
         }
 
@@ -252,7 +278,9 @@ namespace MindTouch.Dream {
         /// <param name="text">Error message.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage InternalError(string text) {
+#if !DOTNETCORE
             _log.DebugMethodCall("Response: Internal Error", text);
+#endif
             return new DreamMessage(DreamStatus.InternalError, null, GetDefaultErrorResponse(DreamStatus.InternalError, "Internal Error", text));
         }
 
@@ -262,7 +290,9 @@ namespace MindTouch.Dream {
         /// <param name="e">Exception responsible for internal error.</param>
         /// <returns>New DreamMessage.</returns>
         public static DreamMessage InternalError(Exception e) {
+#if !DOTNETCORE
             _log.DebugExceptionMethodCall(e, "Response: Internal Error");
+#endif
             return new DreamMessage(DreamStatus.InternalError, null, MimeType.DREAM_EXCEPTION, (e != null) ? new XException(e) : XDoc.Empty);
         }
 
@@ -351,6 +381,7 @@ namespace MindTouch.Dream {
         }
 
         private static string DebugOnly_GetRequestPath() {
+#if !DOTNETCORE
             if(!_log.IsDebugEnabled) {
                 return null;
             }
@@ -359,6 +390,9 @@ namespace MindTouch.Dream {
                 return null;
             }
             return ", path: " + context.Uri.Path;
+#else
+            return null;
+#endif
         }
 
         //--- Fields ---
@@ -378,7 +412,9 @@ namespace MindTouch.Dream {
         private byte[] _bytes;
         private Stream _stream;
         private bool _streamOpen;
+#if !DOTNETCORE
         private System.Diagnostics.StackTrace _stackTrace = DebugUtil.GetStackTrace();
+#endif
 
         //--- Constructors ---
 
@@ -464,7 +500,11 @@ namespace MindTouch.Dream {
             }
             this.Status = status;
             this.Headers = new DreamHeaders(headers);
+#if !DOTNETCORE
             this.Headers.ContentLength = bytes.LongLength;
+#else
+            this.Headers.ContentLength = bytes.Length;
+#endif
             this.Headers.ContentType = contentType ?? MimeType.DefaultMimeType;
 
             // set bytes
@@ -481,7 +521,7 @@ namespace MindTouch.Dream {
         public DreamMessage(DreamStatus status, DreamHeaders headers, MimeType contentType, string text)
             : this(status, headers, contentType, contentType.CharSet.GetBytes(text)) { }
 
-#if DEBUG
+#if DEBUG && !DOTNETCORE
         /// <summary>
         /// Finalizer for DreamMessage to warn and possibly throw an exception if a message with an open stream reaches garbage collection.
         /// </summary>
@@ -540,7 +580,11 @@ namespace MindTouch.Dream {
                 if(IsClosed) {
                     return 0;
                 } else if(_bytes != null) {
+#if !DOTNETCORE
                     return _bytes.LongLength;
+#else
+                    return _bytes.Length;
+#endif
                 } else if(_stream.IsStreamMemorized()) {
                     return _stream.Length;
                 }
@@ -682,9 +726,15 @@ namespace MindTouch.Dream {
                 result = new DreamMessage(Status, Headers, ContentType, bytes);
 
                 // length may differ for HEAD requests
+#if !DOTNETCORE
                 if(bytes.LongLength != ContentLength) {
                     result.Headers.ContentLength = bytes.LongLength;
                 }
+#else
+                if(bytes.Length != ContentLength) {
+                    result.Headers.ContentLength = bytes.Length;
+                }
+#endif
             }
             if(HasCookies) {
                 result.Cookies.AddRange(Cookies);
@@ -697,7 +747,11 @@ namespace MindTouch.Dream {
         /// </summary>
         public void Close() {
             if(_stream != null) {
+#if !DOTNETCORE
                 _stream.Close();
+#else
+                _stream.Dispose();
+#endif
                 _streamOpen = false;
             }
             _doc = null;
@@ -705,6 +759,7 @@ namespace MindTouch.Dream {
             _bytes = null;
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Memorize the content stream.
         /// </summary>
@@ -782,6 +837,7 @@ namespace MindTouch.Dream {
             _stream = buffer;
             result.Return();
         }
+#endif
 
         /// <summary>
         /// Convert the message into a string.
@@ -804,7 +860,11 @@ namespace MindTouch.Dream {
                     }
                 } finally {
                     if(_stream != null) {
+#if !DOTNETCORE
                         _stream.Close();
+#else
+                        _stream.Dispose();
+#endif
                         _stream = null;
                         _streamOpen = false;
                     }
@@ -857,7 +917,11 @@ namespace MindTouch.Dream {
                         _stream.CopyToStream(buffer, ContentLength);
                         _bytes = buffer.ToArray();
                     } finally {
+#if !DOTNETCORE
                         _stream.Close();
+#else
+                        _stream.Dispose();
+#endif
                         _stream = null;
                         _streamOpen = false;
                     }

@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,6 +55,7 @@ namespace System {
 
         //--- Class Constructor ---
         static SysUtil() {
+#if !DOTNETCORE
             _isMono = (Type.GetType("Mono.Runtime") != null);
             if(!bool.TryParse(System.Configuration.ConfigurationManager.AppSettings["async-io"], out UseAsyncIO)) {
                 UseAsyncIO = !_isMono;
@@ -69,6 +70,11 @@ namespace System {
                 // use default capacity for nametable
                 NameTable = new LockFreeXmlNameTable();
             }
+#else
+            _isMono = false;
+            UseAsyncIO = true;
+            NameTable = new LockFreeXmlNameTable();
+#endif
         }
 
         //--- Class Properties ---
@@ -83,11 +89,15 @@ namespace System {
         /// </summary>
         public static bool IsUnix {
             get {
+#if !DOTNETCORE
 
                 // NOTE: taken from http://www.mono-project.com/FAQ:_Technical#Compatibility
 
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 128);
+#else
+                return true;
+#endif
             }
         }
 

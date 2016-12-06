@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,17 +30,25 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+#if !DOTNETCORE
 using System.Xml.Xsl;
+#endif
 using MindTouch.Dream;
+#if !DOTNETCORE
 using MindTouch.IO;
 using MindTouch.Security.Cryptography;
+#endif
 
 namespace MindTouch.Xml {
 
     /// <summary>
     /// A fluent interface-style Document Object Model for building, manipulating and ingesting Xml.
     /// </summary>
+#if !DOTNETCORE
     public class XDoc : IEnumerable<XDoc>, ICloneable {
+#else
+    public class XDoc : IEnumerable<XDoc> {
+#endif
 
         //--- Constants ---
 
@@ -65,6 +73,7 @@ namespace MindTouch.Xml {
         public const string NS_XML = "http://www.w3.org/XML/1998/namespace";
 
         //--- Types ---
+#if !DOTNETCORE
         private sealed class XmlRemoveInvalidXmlCharsTextWriter : XmlTextWriter {
 
             //--- Constructors ---
@@ -77,6 +86,7 @@ namespace MindTouch.Xml {
                 base.WriteString(RemoveInvalidXmlChars(text));
             }
         }
+#endif
 
         //--- Class Fields ---
 
@@ -90,7 +100,9 @@ namespace MindTouch.Xml {
         /// </summary>
         public static readonly XmlNameTable XmlNameTable = SysUtil.NameTable;
 
+#if !DOTNETCORE
         private static readonly log4net.ILog _log = LogUtils.CreateLog();
+#endif
         private static readonly Regex _elementRegex = new Regex(@"(?<name>.+)\[(?<index>\d+)\]$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly Regex _htmlEntitiesRegEx = new Regex("&#(?<value>(x[a-f0-9]+|[0-9]+));", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
@@ -2194,7 +2206,7 @@ namespace MindTouch.Xml {
         }
 
         /// <summary>
-        /// Change the name of the current element node. 
+        /// Change the name of the current element node.
         /// </summary>
         /// <param name="name">New element name.</param>
         /// <returns></returns>
@@ -2233,7 +2245,7 @@ namespace MindTouch.Xml {
         }
 
         /// <summary>
-        /// Prepend child nodes from another XDoc instance. 
+        /// Prepend child nodes from another XDoc instance.
         /// </summary>
         /// <param name="doc">Container of prepended nodes.</param>
         /// <returns></returns>
@@ -2257,7 +2269,7 @@ namespace MindTouch.Xml {
         }
 
         /// <summary>
-        /// Add child nodes from another XDoc instance before this one. 
+        /// Add child nodes from another XDoc instance before this one.
         /// </summary>
         /// <param name="doc">Container of prepended nodes.</param>
         /// <returns></returns>
@@ -2287,7 +2299,7 @@ namespace MindTouch.Xml {
         }
 
         /// <summary>
-        /// Add child nodes from another XDoc instance after this one. 
+        /// Add child nodes from another XDoc instance after this one.
         /// </summary>
         /// <param name="doc">Container of prepended nodes.</param>
         /// <returns></returns>
@@ -2315,7 +2327,7 @@ namespace MindTouch.Xml {
         }
 
         /// <summary>
-        /// Adds child nodes from another XDoc instance. 
+        /// Adds child nodes from another XDoc instance.
         /// </summary>
         /// <param name="doc">Container of added nodes.</param>
         /// <returns></returns>
@@ -2743,6 +2755,7 @@ namespace MindTouch.Xml {
             return this;
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Converts this XDoc instance into a string using the given XSLT.
         /// </summary>
@@ -2772,6 +2785,7 @@ namespace MindTouch.Xml {
             }
             return new XDoc(result);
         }
+#endif
 
         /// <summary>
         /// Stores this XDoc instance into a file.
@@ -3072,6 +3086,7 @@ namespace MindTouch.Xml {
             return IsEmpty ? 1 : Name.GetHashCode();
         }
 
+#if !DOTNETCORE
         /// <summary>
         /// Append XML digital signature to XDoc instance.
         /// </summary>
@@ -3135,6 +3150,7 @@ namespace MindTouch.Xml {
             }
             return false;
         }
+#endif
 
         /// <summary>
         /// Remove XML digital signature from XDoc instance.
@@ -3376,10 +3392,11 @@ namespace MindTouch.Xml {
             return ((IEnumerable<XDoc>)this).GetEnumerator();
         }
 
+#if !DOTNETCORE
         //--- ICloneable Members ---
         object ICloneable.Clone() {
             return this.Clone();
         }
-
+#endif
     }
 }

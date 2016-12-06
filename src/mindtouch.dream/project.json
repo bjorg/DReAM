@@ -1,0 +1,64 @@
+{
+  "name": "MindTouch",
+  "copyright": "Copyright (c) 2006-2016 MindTouch, Inc.",
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "define": [ "DOTNETCORE" ],
+    "emitEntryPoint": false,
+    "compile": {
+      "exclude": ".",
+      "includeFiles": [
+
+        "Collections/LockFreeXmlNameTable.cs",
+        "Collections/SingleLinkNode.cs",
+
+        "dream/dreammessage.cs",
+        "dream/DreamHeaders.cs",
+        "dream/mimetype.cs",
+        "dream/types.cs",
+        "dream/XUri.cs",
+        "dream/XUriParser.cs",
+
+        // "IO/StreamUtil.cs",
+
+        // "plug/HttpPlugEndpoint.cs",
+        // "plug/IPlugEndpoint.cs",
+        // "plug/Plug.cs",
+        // "plug/ResourcePlugEndpoint.cs",
+
+        "system/ShouldNeverHappenException.cs",
+        "system/StringUtil.cs",
+        "system/SysUtil.cs",
+
+        "Web/DreamCookie.cs",
+        "Web/DreamCookieJar.cs",
+        "Web/HttpUtil.cs",
+        "Web/InvalidHttpAuthorizationHeader.cs",
+
+        "Xml/XDoc.cs",
+        "Xml/XDocRecursiveEnumerable.cs",
+        "Xml/XTypes.cs"
+      ]
+    }
+  },
+  "dependencies": {
+    "System.Collections.Specialized": "4.3.0",
+    "System.Reflection": "4.3.0",
+    "System.Reflection.Primitives": "4.3.0",
+    "System.Xml.XmlDocument": "4.3.0",
+    "System.Xml.XmlSerializer": "4.3.0",
+    "System.Xml.XPath": "4.3.0"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

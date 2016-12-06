@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,16 +30,21 @@ using System.Security.Cryptography.X509Certificates;
 #endif
 
 using System.Text;
+#if !DOTNETCORE
 using MindTouch.Tasking;
+#endif
 using MindTouch.Web;
 using MindTouch.Xml;
 
 namespace MindTouch.Dream.Http {
+#if !DOTNETCORE
     using Yield = IEnumerator<IYield>;
+#endif
 
     internal class HttpPlugEndpoint : IPlugEndpoint {
 
         //--- Types ---
+#if !DOTNETCORE
         internal class ActivityState {
 
             //--- Fields ---
@@ -75,9 +80,12 @@ namespace MindTouch.Dream.Http {
                 }
             }
         }
+#endif
 
         //--- Class Fields ---
+#if !DOTNETCORE
         private static readonly log4net.ILog _log = LogUtils.CreateLog();
+#endif
 
         //--- Class Constructor ---
         static HttpPlugEndpoint() {
@@ -165,8 +173,8 @@ namespace MindTouch.Dream.Http {
             // The HTTP request is made up of the following parts:
             // 1.   Sending the request is covered by using the HttpWebRequest.Timeout method.
             // 2.   Getting the response header is covered by using the HttpWebRequest.Timeout method.
-            // 3.   Reading the body of the response is not covered by using the HttpWebResponse.Timeout method. In ASP.NET 1.1 and in later versions, reading the body of the response 
-            //      is covered by using the HttpWebRequest.ReadWriteTimeout method. The HttpWebRequest.ReadWriteTimeout method is used to handle cases where the response headers are 
+            // 3.   Reading the body of the response is not covered by using the HttpWebResponse.Timeout method. In ASP.NET 1.1 and in later versions, reading the body of the response
+            //      is covered by using the HttpWebRequest.ReadWriteTimeout method. The HttpWebRequest.ReadWriteTimeout method is used to handle cases where the response headers are
             //      retrieved in a timely manner but where the reading of the response body times out.
 
             httpRequest.KeepAlive = false;
@@ -185,7 +193,7 @@ namespace MindTouch.Dream.Http {
                 httpRequest.PreAuthenticate = true;
 
                 // Note (arnec): this manually adds the basic auth header, so it can authorize
-                // in a single request without requiring challenge 
+                // in a single request without requiring challenge
                 var authbytes = Encoding.ASCII.GetBytes(string.Concat(uri.User ?? string.Empty, ":", uri.Password ?? string.Empty));
                 var base64 = Convert.ToBase64String(authbytes);
                 httpRequest.Headers.Add(DreamHeaders.AUTHORIZATION, "Basic " + base64);

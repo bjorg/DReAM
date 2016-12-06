@@ -1,5 +1,5 @@
 /*
- * MindTouch Dream - a distributed REST framework 
+ * MindTouch Dream - a distributed REST framework
  * Copyright (C) 2006-2014 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -9,9 +9,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,9 @@ namespace MindTouch.Web {
     public class DreamCookie {
 
         //--- Class Fields ---
+#if !DOTNETCORE
         private static log4net.ILog _log = LogUtils.CreateLog();
+#endif
 
         //--- Class Methods ---
 
@@ -927,7 +929,7 @@ namespace MindTouch.Web {
         }
 
         /// <summary>
-        /// Create new cookie with public Uri, in case the current instance is using 
+        /// Create new cookie with public Uri, in case the current instance is using
         /// </summary>
         /// <remarks>
         /// This call uses the public uri captured at cookie creation time, so can be used independently of request context.
